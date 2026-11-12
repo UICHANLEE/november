@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f5f0"><title>미션 스캔</title>
+  <link rel="stylesheet" href="style.css"><script src="vendor/jsQR.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header><a class="brand" href="./"><span class="brand-mark">✳</span> MISSION SCAN</a><span class="header-label">QR MISSION</span></header>
+    <main>
+      <div class="intro"><p class="eyebrow"><span></span> READY FOR YOUR MISSION?</p><h1>QR을 스캔하고<br><em>미션을 시작하세요.</em></h1><p class="intro-copy">발견한 QR 코드를 카메라에 비춰주세요.<br>당신의 미션 난이도를 알려드릴게요.</p></div>
+      <section class="scanner-card" aria-label="QR 코드 스캐너">
+        <div class="card-top"><div><span class="step">01 / SCAN</span><h2>코드 스캔하기</h2></div><span class="status" id="status">준비됨</span></div>
+        <div class="camera" id="camera"><video id="video" playsinline muted aria-label="카메라 화면"></video><div class="camera-placeholder" id="placeholder"><div class="scan-icon"><i></i><i></i><i></i><i></i><span>✳</span></div><p>카메라를 켜고 QR 코드를<br>프레임 안에 맞춰주세요</p></div><div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i><div class="scan-line"></div></div></div>
+        <p class="feedback" id="feedback" role="status" aria-live="polite">카메라 접근 권한을 허용해 주세요.</p>
+        <button class="primary" id="start" type="button">카메라 켜기 <span>↗</span></button>
+        <button class="secondary" id="stop" type="button" hidden>카메라 끄기</button>
+        <canvas id="canvas" hidden></canvas>
+      </section>
+      <div class="under"><span>✦</span><p><strong>HOW TO PLAY</strong><br>QR 코드를 찾고, 스캔하고, 본부로 이동하세요.</p><span class="under-number">01 — 03</span></div>
+    </main>
+    <footer><span>YOUR NEXT MISSION AWAITS.</span><a href="cards.html">운영자용 QR 코드 ↗</a></footer>
+  </div>
+  <section class="result" id="result" hidden aria-labelledby="result-title"><div class="result-inner"><div class="result-top"><span>✳ MISSION SCAN</span><span>MISSION FOUND</span></div><div class="result-content"><p class="eyebrow">✦ &nbsp; YOUR MISSION LEVEL</p><h2 id="result-title">미션을 찾았어요!</h2><p class="result-copy">이번 미션의 난이도는</p><div class="level" id="level">01</div><p class="level-label">LEVEL <span id="level-text">1</span></p><div class="result-message"><span>↗</span><p><strong>본부로 가서</strong><br>미션을 수행하세요.</p></div><button class="primary result-button" id="again" type="button">다시 스캔하기 <span>↗</span></button></div><div class="result-bottom">GOOD LUCK WITH YOUR MISSION! <span>✳</span></div></div></section>
+</body></html>
