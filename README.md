@@ -26,3 +26,5 @@ QR 인식에는 jsQR 1.4.0을 사용하며 라이선스는 `dist/vendor/jsQR-LIC
 이미지에 있던 나머지 재료는 `data/future-rewards.json`에 개별 피규어 활동 후보로만 보관합니다. 피규어 자동 인식과 자동 지급 기능은 아직 구현되지 않았지만, 관리자가 해당 재료를 수동으로 기록할 수 있습니다. 기존 행사 기록은 유지됩니다. 이전에 이미 스캔한 QR은 그대로 사용된 상태로 남습니다.
 
 재료 그림은 `node scripts/generate-reward-illustrations.cjs`로 생성합니다. 그림자와 공개 그림이 같은 외곽선을 사용하는지 `node tests/reward-art.cjs`로 확인할 수 있습니다.
+
+재료 공개 화면은 동일한 그림자 모양으로 사진 질감을 가립니다. `dist/assets/food/ingredient-atlas.jpg`는 CC0 마늘 사진을 질감 참고로 제작한 AI 이미지이며, 깻잎 질감에는 Alex Abair의 Wikimedia Commons 사진(CC BY 4.0)을 합성합니다. 원본과 라이선스, 변경 사항은 사이트의 `image-credits.html`에 표시합니다.

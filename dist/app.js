@@ -2,6 +2,8 @@
   const $ = id => document.getElementById(id);
   const video=$('video'), canvas=$('canvas'), context=canvas.getContext('2d',{willReadFrequently:true});
   const start=$('start'), stop=$('stop'), feedback=$('feedback'), status=$('status'), camera=$('camera');
+  // Atlas positions are keyed by the revealed ingredient, never by a QR.
+  const foodPositions={'쌈무':[0,0],'상추':[1,0],'깻잎':[2,0],'양파':[3,0],'마늘':[0,1],'파절임':[1,1],'소스':[2,1],'버섯':[3,1],'소시지':[0,2],'참소스':[1,2],'고기 1개':[2,2]};
   let token=localStorage.getItem('mission-participant') || '', team=null, stream=null, frame=null, starting=false, processing=false, timer=null, polling=false, currentMission=null;
   function closeCamera() {
     if(frame) cancelAnimationFrame(frame); frame=null;
@@ -53,7 +55,7 @@
   function showMission(mission) {
     $('mission-category').textContent=mission.category; $('mission-instruction').textContent=mission.instruction;
     $('mission-reward').textContent='???'; $('reward-prompt').textContent='어떤 재료일까요?'; $('reward-instruction').textContent='본부에서 미션을 완료한 뒤 확인해 주세요.'; $('mission-reward-image').alt='정체를 숨긴 재료 그림자'; $('mission-reward-image').classList.remove('is-revealed'); $('mission-reward-note').hidden=mission.category!=='어려운 미션';
-    $('mission-reward-image').src=`assets/rewards/${mission.decoyKey}.svg`; $('reveal-reward').hidden=false;
+    $('mission-reward-image').src=`assets/rewards/${mission.decoyKey}.svg`; $('reward-photo').hidden=true; $('reveal-reward').hidden=false;
     $('reveal-reward').disabled=false; $('reveal-feedback').textContent='';
   }
   $('review-mission').addEventListener('click',()=>{
@@ -62,7 +64,23 @@
   });
   $('reveal-reward').addEventListener('click',async()=>{
     if(!currentMission) return; const button=$('reveal-reward'); button.disabled=true; $('reveal-feedback').textContent='재료를 확인하고 있어요.';
-    try { const result=await api({action:'reveal',token,missionId:currentMission.id}); $('mission-reward').textContent=result.reward; $('reward-prompt').textContent='진짜 재료는!'; $('reward-instruction').textContent=result.revealLine || '그림자와 다른 재료였어요!'; $('mission-reward-image').src=`assets/reveals/${currentMission.id}.svg`; $('mission-reward-image').alt=`${result.reward} 그림`; $('mission-reward-image').classList.add('is-revealed'); button.hidden=true; $('reveal-feedback').textContent='본부에서 재료를 받아주세요.'; }
+    try {
+      const result=await api({action:'reveal',token,missionId:currentMission.id});
+      const image=$('mission-reward-image'), photo=$('reward-photo'), position=foodPositions[result.reward];
+      $('mission-reward').textContent=result.reward; $('reward-prompt').textContent='진짜 재료는!'; $('reward-instruction').textContent=result.revealLine || '그림자와 다른 재료였어요!';
+      image.alt=`${result.reward} 그림`; image.classList.add('is-revealed');
+      if(position) {
+        const atlasPosition=`${position[0]*100/3}% ${position[1]*50}%`;
+        photo.style.maskImage=`url("assets/rewards/${currentMission.decoyKey}.svg")`;
+        photo.style.webkitMaskImage=photo.style.maskImage;
+        photo.style.backgroundImage=result.reward==='깻잎' ? 'url("assets/food/perilla-commons.jpg"), url("assets/food/ingredient-atlas.jpg")' : 'url("assets/food/ingredient-atlas.jpg")';
+        photo.style.backgroundSize=result.reward==='깻잎' ? 'cover, 400% 300%' : '400% 300%';
+        photo.style.backgroundPosition=result.reward==='깻잎' ? `center, ${atlasPosition}` : atlasPosition;
+        photo.style.backgroundBlendMode=result.reward==='깻잎' ? 'soft-light' : 'normal';
+        photo.hidden=false;
+      } else { image.src=`assets/reveals/${currentMission.id}.svg`; }
+      button.hidden=true; $('reveal-feedback').textContent='본부에서 재료를 받아주세요.';
+    }
     catch(error) { $('reveal-feedback').textContent=error.message; }
     finally { button.disabled=false; }
   });
