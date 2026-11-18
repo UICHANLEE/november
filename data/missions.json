@@ -4,104 +4,119 @@
     "instruction": "단체 포즈를 똑같이 해 보세요.",
     "reward": "쌈무",
     "rewardKey": "pickled-radish",
-    "decoyKey": "onion"
+    "decoyKey": "onion",
+    "revealLine": "양파인 척한 쌈무!"
   },
   "1-02": {
     "category": "일반 미션",
     "instruction": "단체 포즈를 똑같이 해 보세요.",
     "reward": "상추",
     "rewardKey": "lettuce",
-    "decoyKey": "scallion"
+    "decoyKey": "mushroom",
+    "revealLine": "버섯인 척한 상추!"
   },
   "1-03": {
     "category": "일반 미션",
     "instruction": "단체 포즈를 똑같이 해 보세요.",
     "reward": "깻잎",
     "rewardKey": "perilla",
-    "decoyKey": "garlic"
+    "decoyKey": "garlic",
+    "revealLine": "마늘인 척한 깻잎!"
   },
   "1-04": {
     "category": "일반 미션",
     "instruction": "단체 포즈를 똑같이 해 보세요.",
     "reward": "양파",
     "rewardKey": "onion",
-    "decoyKey": "pickled-radish"
+    "decoyKey": "pickled-radish",
+    "revealLine": "쌈무인 척한 양파!"
   },
   "1-05": {
     "category": "일반 미션",
     "instruction": "단체 포즈를 똑같이 해 보세요.",
     "reward": "마늘",
     "rewardKey": "garlic",
-    "decoyKey": "perilla"
+    "decoyKey": "perilla",
+    "revealLine": "깻잎인 척한 마늘!"
   },
   "2-01": {
     "category": "일반 미션",
     "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
     "reward": "파절임",
     "rewardKey": "scallion",
-    "decoyKey": "lettuce"
+    "decoyKey": "sausage",
+    "revealLine": "소시지인 척한 파절임!"
   },
   "2-02": {
     "category": "일반 미션",
     "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
     "reward": "소스",
     "rewardKey": "sauce",
-    "decoyKey": "sesame-sauce"
+    "decoyKey": "sesame-sauce",
+    "revealLine": "참소스인 척한 소스!"
   },
   "2-03": {
     "category": "일반 미션",
     "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
     "reward": "버섯",
     "rewardKey": "mushroom",
-    "decoyKey": "sausage"
+    "decoyKey": "lettuce",
+    "revealLine": "상추인 척한 버섯!"
   },
   "2-04": {
     "category": "일반 미션",
     "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
     "reward": "소시지",
     "rewardKey": "sausage",
-    "decoyKey": "mushroom"
+    "decoyKey": "scallion",
+    "revealLine": "파절임인 척한 소시지!"
   },
   "2-05": {
     "category": "일반 미션",
     "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
     "reward": "참소스",
     "rewardKey": "sesame-sauce",
-    "decoyKey": "sauce"
+    "decoyKey": "sauce",
+    "revealLine": "소스인 척한 참소스!"
   },
   "3-01": {
     "category": "어려운 미션",
     "instruction": "목사님과 함께 Bad 춤 영상을 찍어 보세요.",
     "reward": "고기 1개",
     "rewardKey": "meat",
-    "decoyKey": "mushroom"
+    "decoyKey": "mushroom",
+    "revealLine": "버섯인 척한 고기!"
   },
   "3-02": {
     "category": "어려운 미션",
     "instruction": "목사님과 함께 L을 가져가 춤 영상을 찍어 보세요.",
     "reward": "고기 1개",
     "rewardKey": "meat",
-    "decoyKey": "lettuce"
+    "decoyKey": "lettuce",
+    "revealLine": "상추인 척한 고기!"
   },
   "3-03": {
     "category": "어려운 미션",
     "instruction": "목사님과 함께 우사기 랩을 불러 영상을 찍어 보세요.",
     "reward": "고기 1개",
     "rewardKey": "meat",
-    "decoyKey": "onion"
+    "decoyKey": "onion",
+    "revealLine": "양파인 척한 고기!"
   },
   "3-04": {
     "category": "어려운 미션",
     "instruction": "목사님과 함께 파라파라 영상을 찍어 보세요.",
     "reward": "고기 1개",
     "rewardKey": "meat",
-    "decoyKey": "garlic"
+    "decoyKey": "garlic",
+    "revealLine": "마늘인 척한 고기!"
   },
   "3-05": {
     "category": "어려운 미션",
     "instruction": "목사님과 함께 ‘나 000인데~’ 챌린지 영상을 찍어 보세요.",
     "reward": "고기 1개",
     "rewardKey": "meat",
-    "decoyKey": "sauce"
+    "decoyKey": "sauce",
+    "revealLine": "소스인 척한 고기!"
   }
 }

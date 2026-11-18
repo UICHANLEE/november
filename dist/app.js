@@ -52,7 +52,7 @@
   }
   function showMission(mission) {
     $('mission-category').textContent=mission.category; $('mission-instruction').textContent=mission.instruction;
-    $('mission-reward').textContent='???'; $('mission-reward-note').hidden=mission.category!=='어려운 미션';
+    $('mission-reward').textContent='???'; $('reward-prompt').textContent='어떤 재료일까요?'; $('reward-instruction').textContent='본부에서 미션을 완료한 뒤 확인해 주세요.'; $('mission-reward-image').alt='정체를 숨긴 재료 그림자'; $('mission-reward-image').classList.remove('is-revealed'); $('mission-reward-note').hidden=mission.category!=='어려운 미션';
     $('mission-reward-image').src=`assets/rewards/${mission.decoyKey}.svg`; $('reveal-reward').hidden=false;
     $('reveal-reward').disabled=false; $('reveal-feedback').textContent='';
   }
@@ -62,7 +62,7 @@
   });
   $('reveal-reward').addEventListener('click',async()=>{
     if(!currentMission) return; const button=$('reveal-reward'); button.disabled=true; $('reveal-feedback').textContent='재료를 확인하고 있어요.';
-    try { const result=await api({action:'reveal',token,missionId:currentMission.id}); $('mission-reward').textContent=result.reward; button.hidden=true; $('reveal-feedback').textContent='본부에서 재료를 받아주세요.'; }
+    try { const result=await api({action:'reveal',token,missionId:currentMission.id}); $('mission-reward').textContent=result.reward; $('reward-prompt').textContent='진짜 재료는!'; $('reward-instruction').textContent=result.revealLine || '그림자와 다른 재료였어요!'; $('mission-reward-image').src=`assets/reveals/${currentMission.id}.svg`; $('mission-reward-image').alt=`${result.reward} 그림`; $('mission-reward-image').classList.add('is-revealed'); button.hidden=true; $('reveal-feedback').textContent='본부에서 재료를 받아주세요.'; }
     catch(error) { $('reveal-feedback').textContent=error.message; }
     finally { button.disabled=false; }
   });

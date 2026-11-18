@@ -136,7 +136,7 @@ module.exports = async function handler(req,res) {
       if(outcome===-1002 || outcome===-1) return bad(res,401,'참가 정보가 만료되었어요. 다시 입장해 주세요.');
       if(outcome===-2) return bad(res,403,'아직 조가 배정되지 않았어요.');
       if(outcome===-3) return bad(res,403,'우리 조가 찾은 미션만 확인할 수 있어요.');
-      return res.status(200).json({reward:codeInfo.reward,team:outcome});
+      return res.status(200).json({reward:codeInfo.reward,revealLine:codeInfo.revealLine,team:outcome});
     }
     return bad(res,400,'요청을 확인해 주세요.');
   } catch(error) { console.error('mission API error',error.message); return bad(res,503,'기록을 확인하지 못했어요. 잠시 후 다시 시도해 주세요.'); }
