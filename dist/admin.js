@@ -23,7 +23,21 @@
     } catch(error){if(error.status===401){loginView();$('login-feedback').textContent=error.message}else{$('admin-error').textContent=error.message;timer=setTimeout(refresh,15000)}}
   }
   $('login-form').addEventListener('submit',async e=>{e.preventDefault();password=$('admin-password').value;sessionStorage.setItem('mission-admin',password);$('login-feedback').textContent='확인 중입니다.';await refresh()});
+  async function download(kind, button) {
+    button.disabled=true; $('admin-error').textContent='저장할 내용을 준비하고 있어요.';
+    try {
+      const data=await api({action:'export'});
+      const base={event:data.event,exportedAt:data.exportedAt};
+      const content=kind==='records' ? {...base,participants:data.participants,teams:data.teams} : {...base,log:data.log};
+      const blob=new Blob([JSON.stringify(content,null,2)+'\n'],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob); const link=document.createElement('a'); link.href=url;
+      link.download=`mission-${kind}-${data.exportedAt.slice(0,10)}.json`; document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      $('admin-error').textContent=kind==='records' ? '현재 기록 다운로드를 시작했어요.' : '활동 로그 다운로드를 시작했어요.';
+    } catch(error){$('admin-error').textContent=error.message;} finally{button.disabled=false;}
+  }
+  $('save-records').addEventListener('click',event=>download('records',event.currentTarget));
+  $('save-logs').addEventListener('click',event=>download('logs',event.currentTarget));
   $('refresh-roster').addEventListener('click',refresh); $('logout').addEventListener('click',loginView);
-  $('new-event').addEventListener('click',async()=>{if(!confirm('새 행사를 시작하면 현재 참가자와 찾기 기록은 새 행사에 표시되지 않습니다. 계속할까요?'))return;try{await api({action:'new_event'});await refresh()}catch(error){$('admin-error').textContent=error.message}});
+  $('new-event').addEventListener('click',async()=>{if(!confirm('새 행사를 시작하면 현재 기록이 새 행사에 표시되지 않습니다. 기록과 활동 로그를 저장했나요?'))return;try{await api({action:'new_event'});await refresh()}catch(error){$('admin-error').textContent=error.message}});
   window.addEventListener('pagehide',()=>clearTimeout(timer));if(password)refresh();
 })();
