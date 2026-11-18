@@ -4,6 +4,8 @@
   const start=$('start'), stop=$('stop'), feedback=$('feedback'), status=$('status'), camera=$('camera');
   // Atlas positions are keyed by the revealed ingredient, never by a QR.
   const foodPositions={'쌈무':[0,0],'상추':[1,0],'깻잎':[2,0],'양파':[3,0],'마늘':[0,1],'파절임':[1,1],'소스':[2,1],'버섯':[3,1],'소시지':[0,2],'참소스':[1,2],'고기 1개':[2,2]};
+  const mascotLines=['우와! 너희가 찾아냈구나!','톡! 간지러워요! ✨','어떤 재료가 숨어 있을까?','우리 조, 본부로 출발!'];
+  let mascotLine=0;
   let token=localStorage.getItem('mission-participant') || '', team=null, stream=null, frame=null, starting=false, processing=false, timer=null, polling=false, currentMission=null;
   function closeCamera() {
     if(frame) cancelAnimationFrame(frame); frame=null;
@@ -44,7 +46,10 @@
       $('new-result').hidden=!!(result.duplicate || result.limit); $('duplicate-result').hidden=!result.duplicate; $('limit-result').hidden=!result.limit;
       currentMission=result.mission || null; $('review-mission').hidden=!result.duplicate || !currentMission;
       if(!result.duplicate && !result.limit) showMission(currentMission);
-      $('result').hidden=false; $('result').scrollTop=0; $('result-title').focus({preventScroll:true});
+      const welcome=!result.duplicate && !result.limit;
+      $('discovery-team').textContent=`${team}조`; $('discovery-welcome').hidden=!welcome; $('result-content').hidden=welcome;
+      mascotLine=0; $('mascot-speech').textContent=mascotLines[0];
+      $('result').hidden=false; $('result').scrollTop=0; $(welcome ? 'discovery-title' : 'result-title').focus({preventScroll:true});
     } catch(error) {
       if(error.status===400) feedback.textContent=error.message;
       else if(error.status===401 || error.status===403) { feedback.textContent=error.message; await refresh(); }
@@ -52,6 +57,13 @@
       status.textContent='확인 필요';
     } finally { processing=false; start.disabled=false; }
   }
+  $('mascot-button').addEventListener('click',()=>{
+    mascotLine=(mascotLine+1)%mascotLines.length; $('mascot-speech').textContent=mascotLines[mascotLine];
+    const mascot=$('mascot-button'); mascot.classList.remove('is-waving'); void mascot.offsetWidth; mascot.classList.add('is-waving');
+  });
+  $('discovery-next').addEventListener('click',()=>{
+    $('discovery-welcome').hidden=true; $('result-content').hidden=false; $('result').scrollTop=0; $('result-title').focus({preventScroll:true});
+  });
   function showMission(mission) {
     $('mission-category').textContent=mission.category; $('mission-instruction').textContent=mission.instruction;
     $('mission-reward').textContent='???'; $('reward-prompt').textContent='어떤 재료일까요?'; $('reward-instruction').textContent='본부에서 미션을 완료한 뒤 확인해 주세요.'; $('mission-reward-image').alt='정체를 숨긴 재료 그림자'; $('mission-reward-image').classList.remove('is-revealed'); $('mission-reward-note').hidden=mission.category!=='어려운 미션';
