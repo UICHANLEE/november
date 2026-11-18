@@ -1,0 +1,92 @@
+{
+  "1-01": {
+    "category": "일반 미션",
+    "instruction": "단체 포즈를 똑같이 해 보세요.",
+    "reward": "쌈무",
+    "rewardKey": "pickled-radish"
+  },
+  "1-02": {
+    "category": "일반 미션",
+    "instruction": "단체 포즈를 똑같이 해 보세요.",
+    "reward": "상추",
+    "rewardKey": "lettuce"
+  },
+  "1-03": {
+    "category": "일반 미션",
+    "instruction": "단체 포즈를 똑같이 해 보세요.",
+    "reward": "깻잎",
+    "rewardKey": "perilla"
+  },
+  "1-04": {
+    "category": "일반 미션",
+    "instruction": "단체 포즈를 똑같이 해 보세요.",
+    "reward": "양파",
+    "rewardKey": "onion"
+  },
+  "1-05": {
+    "category": "일반 미션",
+    "instruction": "단체 포즈를 똑같이 해 보세요.",
+    "reward": "마늘",
+    "rewardKey": "garlic"
+  },
+  "2-01": {
+    "category": "일반 미션",
+    "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
+    "reward": "파절임",
+    "rewardKey": "scallion"
+  },
+  "2-02": {
+    "category": "일반 미션",
+    "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
+    "reward": "소스",
+    "rewardKey": "sauce"
+  },
+  "2-03": {
+    "category": "일반 미션",
+    "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
+    "reward": "버섯",
+    "rewardKey": "mushroom"
+  },
+  "2-04": {
+    "category": "일반 미션",
+    "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
+    "reward": "소시지",
+    "rewardKey": "sausage"
+  },
+  "2-05": {
+    "category": "일반 미션",
+    "instruction": "어릴 때 사진 속 포즈를 그대로 재현해 보세요.",
+    "reward": "참소스",
+    "rewardKey": "sesame-sauce"
+  },
+  "3-01": {
+    "category": "어려운 미션",
+    "instruction": "목사님과 함께 Bad 춤 영상을 찍어 보세요.",
+    "reward": "고기 1개",
+    "rewardKey": "meat"
+  },
+  "3-02": {
+    "category": "어려운 미션",
+    "instruction": "목사님과 함께 L을 가져가 춤 영상을 찍어 보세요.",
+    "reward": "고기 1개",
+    "rewardKey": "meat"
+  },
+  "3-03": {
+    "category": "어려운 미션",
+    "instruction": "목사님과 함께 우사기 랩을 불러 영상을 찍어 보세요.",
+    "reward": "고기 1개",
+    "rewardKey": "meat"
+  },
+  "3-04": {
+    "category": "어려운 미션",
+    "instruction": "목사님과 함께 파라파라 영상을 찍어 보세요.",
+    "reward": "고기 1개",
+    "rewardKey": "meat"
+  },
+  "3-05": {
+    "category": "어려운 미션",
+    "instruction": "목사님과 함께 ‘나 000인데~’ 챌린지 영상을 찍어 보세요.",
+    "reward": "고기 1개",
+    "rewardKey": "meat"
+  }
+}

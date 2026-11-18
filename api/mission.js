@@ -1,7 +1,8 @@
 const crypto = require('node:crypto');
 const codes = require('../data/codes.json');
+const missions = require('../data/missions.json');
 const levels = new Map(codes.map(code => [code.value, code.level]));
-const codeMetadata = new Map(codes.map(code => [crypto.createHash('sha256').update(code.value).digest('hex'), {id:code.id, level:code.level}]));
+const codeMetadata = new Map(codes.map(code => [crypto.createHash('sha256').update(code.value).digest('hex'), {id:code.id, level:code.level, ...missions[code.id]}]));
 const prefix = 'mission:v1:';
 
 async function redis(...args) {
@@ -13,6 +14,7 @@ async function redis(...args) {
   return data.result;
 }
 const digest = value => crypto.createHash('sha256').update(value).digest('hex');
+const hardCodeHashes = JSON.stringify(codes.filter(code=>code.level===3).map(code=>digest(code.value)));
 const koreaTime = value => new Date(Number(value) + 9 * 60 * 60 * 1000).toISOString().replace('Z','+09:00');
 function authorized(req) {
   const expected = process.env.MISSION_ADMIN_PASSWORD;
@@ -32,7 +34,7 @@ module.exports = async function handler(req,res) {
     const {action} = body;
     if (['roster','assign','new_event','cards','export'].includes(action)) {
       if (!authorized(req)) return bad(res,401,'관리자 비밀번호가 올바르지 않습니다.');
-      if(action === 'cards') return res.status(200).json({cards:require('../data/qr-cards.json')});
+      if(action === 'cards') return res.status(200).json({cards:require('../data/qr-cards.json').map(card=>({...card,mission:missions[card.id]})),futureRewards:require('../data/future-rewards.json')});
       if(action === 'new_event') {
         const event = crypto.randomBytes(12).toString('hex');
         const script = "redis.call('SET',KEYS[1],ARGV[1]); redis.call('RPUSH',KEYS[2],ARGV[2]); return 1";
@@ -103,12 +105,13 @@ module.exports = async function handler(req,res) {
       const level = levels.get(body.code);
       if(!level) return bad(res,400,'등록되지 않은 QR 코드예요.');
       const codeId = digest(body.code);
-      const script = "if redis.call('GET',KEYS[2])~=ARGV[4] then return -1002 end; local p=redis.call('HGET',KEYS[1],ARGV[1]); if not p then return -1 end; local team=cjson.decode(p).team; if not team or team==cjson.null then return -2 end; local group=ARGV[2]..tostring(team); local added=redis.call('SADD',group,ARGV[3]); local kind='duplicate'; if added==1 then kind='found' end; redis.call('RPUSH',KEYS[3],cjson.encode({type=kind,at=tonumber(ARGV[5]),name=cjson.decode(p).name,team=team,qrId=ARGV[6],level=tonumber(ARGV[7])})); if added==1 then return team else return -team-2 end";
+      const script = "if redis.call('GET',KEYS[2])~=ARGV[4] then return -1002 end; local p=redis.call('HGET',KEYS[1],ARGV[1]); if not p then return -1 end; local person=cjson.decode(p); local team=person.team; if not team or team==cjson.null then return -2 end; local group=ARGV[2]..tostring(team); local kind; local outcome; if redis.call('SISMEMBER',group,ARGV[3])==1 then kind='duplicate'; outcome=-team-2 elseif tonumber(ARGV[7])==3 then for _,code in ipairs(cjson.decode(ARGV[8])) do if redis.call('SISMEMBER',group,code)==1 then kind='hard_limit'; outcome=-2000-team; break end end end; if not kind then redis.call('SADD',group,ARGV[3]); kind='found'; outcome=team end; redis.call('RPUSH',KEYS[3],cjson.encode({type=kind,at=tonumber(ARGV[5]),name=person.name,team=team,qrId=ARGV[6],level=tonumber(ARGV[7])})); return outcome";
       const codeInfo=codeMetadata.get(codeId);
-      const outcome = await redis('EVAL',script,3,participants,prefix+'event',`${prefix}${event}:log`,id,`${prefix}${event}:finds:`,codeId,event,String(Date.now()),codeInfo.id,String(level));
+      const outcome = await redis('EVAL',script,3,participants,prefix+'event',`${prefix}${event}:log`,id,`${prefix}${event}:finds:`,codeId,event,String(Date.now()),codeInfo.id,String(level),hardCodeHashes);
       if(outcome===-1002 || outcome===-1) return bad(res,401,'참가 정보가 만료되었어요. 다시 입장해 주세요.');
       if(outcome===-2) return bad(res,403,'아직 조가 배정되지 않았어요.');
-      return res.status(200).json(outcome < -2 ? {duplicate:true,team:-outcome-2} : {duplicate:false,level,team:outcome});
+      if(outcome<=-2001 && outcome>=-2999) return res.status(200).json({limit:true,team:-outcome-2000});
+      return res.status(200).json(outcome < -2 ? {duplicate:true,team:-outcome-2} : {duplicate:false,level,team:outcome,mission:{category:codeInfo.category,instruction:codeInfo.instruction,reward:codeInfo.reward,rewardKey:codeInfo.rewardKey}});
     }
     return bad(res,400,'요청을 확인해 주세요.');
   } catch(error) { console.error('mission API error',error.message); return bad(res,503,'기록을 확인하지 못했어요. 잠시 후 다시 시도해 주세요.'); }

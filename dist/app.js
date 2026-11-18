@@ -38,9 +38,9 @@
     try {
       const result=await api({action:'claim',token,code:value});
       team=result.team; $('team-name').textContent=`${team}조`; $('header-team').textContent=`${team}조`; $('result-team').textContent=`${team}조`;
-      $('result-title').textContent=result.duplicate ? '이미 찾았어요' : '미션을 찾았어요!';
-      $('new-result').hidden=result.duplicate; $('duplicate-result').hidden=!result.duplicate;
-      if(!result.duplicate) { $('level').textContent=String(result.level).padStart(2,'0'); $('level-text').textContent=result.level; }
+      $('result-title').textContent=result.limit ? '어려운 미션에 이미 참여했어요' : result.duplicate ? '이미 찾았어요' : '미션을 찾았어요!';
+      $('new-result').hidden=!!(result.duplicate || result.limit); $('duplicate-result').hidden=!result.duplicate; $('limit-result').hidden=!result.limit;
+      if(!result.duplicate && !result.limit) { $('mission-category').textContent=result.mission.category; $('mission-instruction').textContent=result.mission.instruction; $('mission-reward').textContent=result.mission.reward; $('mission-reward-note').hidden=result.mission.category!=='어려운 미션'; $('mission-reward-image').src=`assets/rewards/${result.mission.rewardKey}.svg`; }
       $('result').hidden=false; $('again').focus();
     } catch(error) {
       if(error.status===400) feedback.textContent=error.message;
