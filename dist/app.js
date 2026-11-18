@@ -2,7 +2,7 @@
   const $ = id => document.getElementById(id);
   const video=$('video'), canvas=$('canvas'), context=canvas.getContext('2d',{willReadFrequently:true});
   const start=$('start'), stop=$('stop'), feedback=$('feedback'), status=$('status'), camera=$('camera');
-  let token=localStorage.getItem('mission-participant') || '', team=null, stream=null, frame=null, starting=false, processing=false, timer=null, polling=false;
+  let token=localStorage.getItem('mission-participant') || '', team=null, stream=null, frame=null, starting=false, processing=false, timer=null, polling=false, currentMission=null;
   function closeCamera() {
     if(frame) cancelAnimationFrame(frame); frame=null;
     if(stream) stream.getTracks().forEach(track=>track.stop()); stream=null; video.srcObject=null;
@@ -36,12 +36,13 @@
   async function found(value) {
     processing=true; closeCamera(); status.textContent='확인 중'; feedback.textContent='우리 조의 미션 기록을 확인하고 있어요.'; start.disabled=true;
     try {
-      const result=await api({action:'claim',token,code:value});
+      const result=await api({action:'claim',token,code:value,clientVersion:2});
       team=result.team; $('team-name').textContent=`${team}조`; $('header-team').textContent=`${team}조`; $('result-team').textContent=`${team}조`;
       $('result-title').textContent=result.limit ? '어려운 미션에 이미 참여했어요' : result.duplicate ? '이미 찾았어요' : '미션을 찾았어요!';
       $('new-result').hidden=!!(result.duplicate || result.limit); $('duplicate-result').hidden=!result.duplicate; $('limit-result').hidden=!result.limit;
-      if(!result.duplicate && !result.limit) { $('mission-category').textContent=result.mission.category; $('mission-instruction').textContent=result.mission.instruction; $('mission-reward').textContent=result.mission.reward; $('mission-reward-note').hidden=result.mission.category!=='어려운 미션'; $('mission-reward-image').src=`assets/rewards/${result.mission.rewardKey}.svg`; }
-      $('result').hidden=false; $('again').focus();
+      currentMission=result.mission || null; $('review-mission').hidden=!result.duplicate || !currentMission;
+      if(!result.duplicate && !result.limit) showMission(currentMission);
+      $('result').hidden=false; $('result').scrollTop=0; $('result-title').focus({preventScroll:true});
     } catch(error) {
       if(error.status===400) feedback.textContent=error.message;
       else if(error.status===401 || error.status===403) { feedback.textContent=error.message; await refresh(); }
@@ -49,6 +50,22 @@
       status.textContent='확인 필요';
     } finally { processing=false; start.disabled=false; }
   }
+  function showMission(mission) {
+    $('mission-category').textContent=mission.category; $('mission-instruction').textContent=mission.instruction;
+    $('mission-reward').textContent='???'; $('mission-reward-note').hidden=mission.category!=='어려운 미션';
+    $('mission-reward-image').src=`assets/rewards/${mission.decoyKey}.svg`; $('reveal-reward').hidden=false;
+    $('reveal-reward').disabled=false; $('reveal-feedback').textContent='';
+  }
+  $('review-mission').addEventListener('click',()=>{
+    if(!currentMission) return; $('duplicate-result').hidden=true; $('limit-result').hidden=true; $('new-result').hidden=false;
+    $('result-title').textContent='우리 조가 찾은 미션'; showMission(currentMission); $('reveal-reward').focus();
+  });
+  $('reveal-reward').addEventListener('click',async()=>{
+    if(!currentMission) return; const button=$('reveal-reward'); button.disabled=true; $('reveal-feedback').textContent='재료를 확인하고 있어요.';
+    try { const result=await api({action:'reveal',token,missionId:currentMission.id}); $('mission-reward').textContent=result.reward; button.hidden=true; $('reveal-feedback').textContent='본부에서 재료를 받아주세요.'; }
+    catch(error) { $('reveal-feedback').textContent=error.message; }
+    finally { button.disabled=false; }
+  });
   function scan() {
     if(!stream || processing) return;
     if(video.readyState>=2 && video.videoWidth) {
