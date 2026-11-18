@@ -15,13 +15,13 @@
 .reward-photo{position:absolute;inset:0;display:block;background-repeat:no-repeat;mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;animation:reveal-pop .35s ease-out}
 @media(prefers-reduced-motion:reduce){.reward-photo{animation:none}}
 
-/* QR discovery: a small interactive celebration before the mission. */
-.discovery-welcome{width:min(100%,520px);margin:auto;padding:26px 0 32px}
+/* Interactive welcome shown when participants open the entry link. */
+.entry-landing{width:min(100%,520px);margin:auto;padding:26px 0 32px}
 .discovery-card{position:relative;overflow:hidden;background:#fffefa;border:1px solid #e2e9d9;border-radius:28px;padding:22px 28px 26px;text-align:center;box-shadow:0 14px 40px rgba(37,62,36,.06)}
 .discovery-meta{display:flex;justify-content:space-between;align-items:center;color:#667b70;font-size:10px;font-weight:900;letter-spacing:.1em}
 .discovery-meta b{color:#f77777;font-size:15px}.discovery-meta>span:last-child{border-radius:99px;background:#e8edff;color:#2455d6;padding:7px 11px;letter-spacing:0;font-size:12px}
 .discovery-kicker{margin:16px 0 5px;color:#7c8c70;font-size:12px;font-weight:800;letter-spacing:-.02em}
-.discovery-card h2{margin:0;color:#172656;font-size:clamp(32px,7vw,48px);line-height:1.14;letter-spacing:-.075em}.discovery-card h2 span{color:#2455d6}
+.discovery-card h1{margin:0;color:#172656;font-size:clamp(32px,7vw,48px);line-height:1.14;letter-spacing:-.075em}.discovery-card h1 span{color:#2455d6}
 .discovery-subtitle{margin:8px 0 0;color:#64777b;font-size:13px;font-weight:700}
 .discovery-stage{position:relative;display:flex;flex-direction:column;align-items:center;margin:9px auto 0;max-width:340px;isolation:isolate}
 .discovery-stage::before{content:"";position:absolute;z-index:-1;top:67px;left:50%;width:235px;height:200px;transform:translateX(-50%) rotate(-8deg);border-radius:45% 55% 48% 52%;background:#ecf6c6}
@@ -31,9 +31,9 @@
 .mascot-button img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 9px 0 rgba(46,87,45,.08));pointer-events:none;animation:mascot-float 3s ease-in-out infinite}.mascot-button.is-waving img{animation:mascot-wave .55s ease-in-out}
 .mascot-hint{position:relative;z-index:2;display:inline-block;margin-top:-3px;border-radius:99px;background:#edf2ff;color:#3157b4;padding:6px 11px;font-size:11px;font-weight:800}
 .discovery-spark{position:absolute;color:#ff9b4b;font-size:22px;font-weight:900}.spark-a{left:10px;top:80px}.spark-b{right:7px;top:50px;color:#f58091}.spark-c{right:28px;bottom:27px;color:#4d68de;font-size:15px}
-.discovery-guide{margin:15px 0 18px;color:#263a48;font-size:14px;line-height:1.65;font-weight:800;word-break:keep-all}.discovery-guide span{color:#7b8a80;font-size:12px;font-weight:600}
-.discovery-next{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:55px;padding:0 20px;border:0;border-radius:14px;background:#2455d6;color:white;font-size:15px;font-weight:900;box-shadow:0 5px 0 #1c3f9c}.discovery-next:hover{background:#183da7}.discovery-next:active{transform:translateY(3px);box-shadow:0 2px 0 #1c3f9c}.discovery-next span{font-size:22px;color:#d9f164}
+.discovery-guide{margin:15px 0 18px;color:#263a48;font-size:14px;line-height:1.65;font-weight:800;word-break:keep-all}.discovery-guide #landing-detail{color:#7b8a80;font-size:12px;font-weight:600}
+.discovery-next{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:55px;padding:0 20px;border:0;border-radius:14px;background:#2455d6;color:white;font-size:15px;font-weight:900;box-shadow:0 5px 0 #1c3f9c}.discovery-next:hover{background:#183da7}.discovery-next:active{transform:translateY(3px);box-shadow:0 2px 0 #1c3f9c}.discovery-next span:last-child{font-size:22px;color:#d9f164}
 @keyframes mascot-float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
 @keyframes mascot-wave{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-8deg) scale(1.04)}55%{transform:rotate(8deg) scale(1.04)}80%{transform:rotate(-4deg)}}
-@media(max-width:480px){.discovery-welcome{padding:17px 0 24px}.discovery-card{border-radius:23px;padding:18px 20px 23px}.discovery-stage::before{width:215px;height:180px}.mascot-button{height:174px;width:235px}.discovery-kicker{margin-top:13px}.discovery-guide{margin:12px 0 16px}}
+@media(max-width:480px){.entry-landing{padding:17px 0 24px}.discovery-card{border-radius:23px;padding:18px 20px 23px}.discovery-stage::before{width:215px;height:180px}.mascot-button{height:174px;width:235px}.discovery-kicker{margin-top:13px}.discovery-guide{margin:12px 0 16px}}
 @media(prefers-reduced-motion:reduce){.mascot-button img,.mascot-button.is-waving img{animation:none}.discovery-next:active{transform:none}}

@@ -4,7 +4,7 @@
   const start=$('start'), stop=$('stop'), feedback=$('feedback'), status=$('status'), camera=$('camera');
   // Atlas positions are keyed by the revealed ingredient, never by a QR.
   const foodPositions={'쌈무':[0,0],'상추':[1,0],'깻잎':[2,0],'양파':[3,0],'마늘':[0,1],'파절임':[1,1],'소스':[2,1],'버섯':[3,1],'소시지':[0,2],'참소스':[1,2],'고기 1개':[2,2]};
-  const mascotLines=['우와! 너희가 찾아냈구나!','톡! 간지러워요! ✨','어떤 재료가 숨어 있을까?','우리 조, 본부로 출발!'];
+  const mascotLines=['안녕! 만나서 반가워!','톡! 간지러워요! ✨','숨은 QR을 같이 찾아보자!','어떤 재료가 숨어 있을까?'];
   let mascotLine=0;
   let token=localStorage.getItem('mission-participant') || '', team=null, stream=null, frame=null, starting=false, processing=false, timer=null, polling=false, currentMission=null;
   function closeCamera() {
@@ -19,6 +19,10 @@
     return body;
   }
   function show(id) { for (const key of ['team-screen','waiting-view','scanner-view']) $(key).hidden=key!==id; }
+  function landingState(state) {
+    const copy=state==='assigned' ? ['다시 만나서 반가워요!','배정된 조와 함께 모험을 이어가요.','모험 계속하기'] : state==='waiting' ? ['조 배정을 기다리고 있어요.','관리자가 배정하면 함께 출발해요.','입장 이어가기'] : ['이름을 알려주면 모험이 시작돼요!','조를 배정받고 숨은 QR을 찾아보자.','모험 시작하기'];
+    $('landing-guide').textContent=copy[0]; $('landing-detail').textContent=copy[1]; $('landing-enter-label').textContent=copy[2];
+  }
   function schedulePoll(ms) { clearTimeout(timer); timer=setTimeout(refresh,ms); }
   async function refresh() {
     if(!token || polling) return; polling=true;
@@ -27,13 +31,13 @@
       if(participant.team) {
         const changed=team !== participant.team; team=participant.team; $('team-name').textContent=`${team}조`; $('header-team').textContent=`${team}조`;
         if (changed && stream) closeCamera();
-        show('scanner-view');
+        show('scanner-view'); landingState('assigned');
       } else {
-        if(stream) closeCamera(); team=null; $('header-team').textContent='배정 대기'; $('waiting-name').textContent=participant.name; $('waiting-feedback').textContent='배정 여부를 확인하고 있어요.'; show('waiting-view');
+        if(stream) closeCamera(); team=null; $('header-team').textContent='배정 대기'; $('waiting-name').textContent=participant.name; $('waiting-feedback').textContent='배정 여부를 확인하고 있어요.'; show('waiting-view'); landingState('waiting');
       }
       schedulePoll(participant.team ? 30000 : 10000);
     } catch(error) {
-      if(error.status===401) { localStorage.removeItem('mission-participant'); token=''; team=null; closeCamera(); show('team-screen'); $('entry-feedback').textContent=error.message; }
+      if(error.status===401) { localStorage.removeItem('mission-participant'); token=''; team=null; closeCamera(); show('team-screen'); landingState('new'); $('entry-feedback').textContent=error.message; }
       else { if(!team) $('waiting-feedback').textContent='연결을 확인하고 다시 시도하고 있어요.'; schedulePoll(15000); }
     } finally { polling=false; }
   }
@@ -46,10 +50,7 @@
       $('new-result').hidden=!!(result.duplicate || result.limit); $('duplicate-result').hidden=!result.duplicate; $('limit-result').hidden=!result.limit;
       currentMission=result.mission || null; $('review-mission').hidden=!result.duplicate || !currentMission;
       if(!result.duplicate && !result.limit) showMission(currentMission);
-      const welcome=!result.duplicate && !result.limit;
-      $('discovery-team').textContent=`${team}조`; $('discovery-welcome').hidden=!welcome; $('result-content').hidden=welcome;
-      mascotLine=0; $('mascot-speech').textContent=mascotLines[0];
-      $('result').hidden=false; $('result').scrollTop=0; $(welcome ? 'discovery-title' : 'result-title').focus({preventScroll:true});
+      $('result').hidden=false; $('result').scrollTop=0; $('result-title').focus({preventScroll:true});
     } catch(error) {
       if(error.status===400) feedback.textContent=error.message;
       else if(error.status===401 || error.status===403) { feedback.textContent=error.message; await refresh(); }
@@ -61,8 +62,9 @@
     mascotLine=(mascotLine+1)%mascotLines.length; $('mascot-speech').textContent=mascotLines[mascotLine];
     const mascot=$('mascot-button'); mascot.classList.remove('is-waving'); void mascot.offsetWidth; mascot.classList.add('is-waving');
   });
-  $('discovery-next').addEventListener('click',()=>{
-    $('discovery-welcome').hidden=true; $('result-content').hidden=false; $('result').scrollTop=0; $('result-title').focus({preventScroll:true});
+  $('landing-enter').addEventListener('click',()=>{
+    $('entry-landing').hidden=true; $('main-layout').hidden=false;
+    window.scrollTo?.({top:0,behavior:'auto'}); $('adventure-title').focus({preventScroll:true});
   });
   function showMission(mission) {
     $('mission-category').textContent=mission.category; $('mission-instruction').textContent=mission.instruction;
@@ -128,7 +130,7 @@
     catch(error) { $('entry-feedback').textContent=error.message; }
     finally { button.disabled=false; }
   });
-  function leave(){clearTimeout(timer);closeCamera();token='';team=null;$('header-team').textContent='MISSION SYSTEM';localStorage.removeItem('mission-participant');show('team-screen');$('entry-feedback').textContent='';$('participant-name').focus();}
+  function leave(){clearTimeout(timer);closeCamera();token='';team=null;$('header-team').textContent='MISSION SYSTEM';localStorage.removeItem('mission-participant');show('team-screen');landingState('new');$('entry-feedback').textContent='';$('participant-name').focus();}
   $('change-team').addEventListener('click',leave); $('leave-waiting').addEventListener('click',leave);
   start.addEventListener('click',openCamera); stop.addEventListener('click',()=>{closeCamera();feedback.textContent='카메라가 꺼졌어요. 다시 켜서 스캔할 수 있어요.';});
   $('again').addEventListener('click',()=>{$('result').hidden=true;status.textContent='준비됨';feedback.textContent='카메라 접근 권한을 허용해 주세요.';start.focus();});
